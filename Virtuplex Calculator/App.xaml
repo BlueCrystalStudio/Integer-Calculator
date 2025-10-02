@@ -1,13 +1,11 @@
 ﻿<Application x:Class="Virtuplex_Calculator.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Virtuplex_Calculator"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:Virtuplex_Calculator">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Link your styles -->
-                <ResourceDictionary Source="Styles/Styles.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

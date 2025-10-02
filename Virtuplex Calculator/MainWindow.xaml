@@ -5,12 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Virtuplex_Calculator"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:conv="clr-namespace:Virtuplex_Calculator.Convertors"
         mc:Ignorable="d"
         Title="Virtuplex Calculator"
         Height="450" Width="300"
         AllowsTransparency="True"
         WindowStyle="None"
         Background="#00000000">
+
+    <Window.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -26,6 +31,59 @@
             <RowDefinition Height="203*"/>
             <RowDefinition Height="47*"/>
         </Grid.RowDefinitions>
+
+        <!--Processing Overlay-->
+        <Border Name="ProcessingOverlay"
+                Visibility="{Binding IsProcessing, Converter={StaticResource BoolToVisibility}}"
+                d:Visibility="Collapsed"
+				CornerRadius="20" Margin="0"
+				Background="#D8000000"
+				Panel.ZIndex="2"
+				Grid.ColumnSpan="4" Grid.RowSpan="5" BorderBrush="{x:Null}">
+
+            <Grid>
+                <!--Text-->
+                <Label Name="OverlayText"
+						   Content="Processing..."
+						   VerticalAlignment="Stretch" Background="{x:Null}"
+						   FontSize="18" FontWeight="Bold" FontStyle="Italic"
+						   HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    <Label.Foreground>
+                        <RadialGradientBrush GradientOrigin="-4,0" Center="0.25,0.5">
+                            <GradientStop Color="#FFE5E7EF"/>
+                            <GradientStop Color="#FF464D52" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Label.Foreground>
+                </Label>
+
+                <!--Loading image-->
+                <Image Source="{iconPacks:MaterialImage Kind=CircleBox, Brush=#FFE5E7EF}" Width="24" Panel.ZIndex="2" Margin="0, 60, 0, 0" OpacityMask="#FFE5E7EF">
+                    <Image.RenderTransform>
+                        <RotateTransform CenterX="12" CenterY="12" />
+                    </Image.RenderTransform>
+                    <Image.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <Trigger Property="Image.IsEnabled" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle"
+																 From="0"
+																 To="360"
+																 Duration="0:0:5"
+																 RepeatBehavior="Forever" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Grid>
+        </Border>
+
 
         <Button Name="CloseButton" Click="CloseButton_Click" Style="{StaticResource HoverRemoveStyle}" Grid.Column="3" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Label FontFamily="Bahnschrift Light" Content="x" FontSize="20" Padding="0" HorizontalContentAlignment="Stretch" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFDA1C1C" Background="{x:Null}" VerticalContentAlignment="Stretch"/>
@@ -47,7 +105,7 @@
 
         <!--Manual Input field-->
         <Border Style="{StaticResource ModernBorder}" Margin="20,0" HorizontalAlignment="Stretch" Height="30" Grid.Row="1" Grid.ColumnSpan="3" Background="#193A3A35">
-            <TextBox Name="InputField" TextWrapping="Wrap" Text="1+1" Height="20" HorizontalAlignment="Stretch" Background="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Name="InputField" TextWrapping="Wrap" Text="2 + 3 * 2" Height="20" HorizontalAlignment="Stretch" Background="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
         </Border>
 
         <!--File Load option-->
@@ -59,7 +117,7 @@
 
         <!--History-->
         <Border Style="{StaticResource ModernBorder}" Margin="20,0" HorizontalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="4" Grid.RowSpan="2" Background="#193A3A35">
-            <RichTextBox Name="History" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}"/>
+            <RichTextBox Name="History" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" IsReadOnly="True"/>
         </Border>
 
         <!--Evaluate bottom content-->
