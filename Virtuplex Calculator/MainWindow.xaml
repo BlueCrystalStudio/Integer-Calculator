@@ -1,0 +1,97 @@
+﻿<Window x:Class="Virtuplex_Calculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Virtuplex_Calculator"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        mc:Ignorable="d"
+        Title="Virtuplex Calculator"
+        Height="450" Width="300"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="#00000000">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="203*"/>
+            <RowDefinition Height="47*"/>
+        </Grid.RowDefinitions>
+
+        <Button Name="CloseButton" Click="CloseButton_Click" Style="{StaticResource HoverRemoveStyle}" Grid.Column="3" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label FontFamily="Bahnschrift Light" Content="x" FontSize="20" Padding="0" HorizontalContentAlignment="Stretch" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFDA1C1C" Background="{x:Null}" VerticalContentAlignment="Stretch"/>
+        </Button>
+
+        <Label Content="Integer Calculator" FontFamily="Segoe UI Semilight" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="4" Foreground="#4F37342B"/>
+        <Label Content="Input" FontFamily="Segoe UI Semilight" Margin="20,12" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="4" Foreground="#7F000000"/>
+        <Label Content="From File" FontFamily="Segoe UI Semilight" Margin="0,12" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.Column="4" Foreground="#7F000000"/>
+        <Label Content="History" FontFamily="Segoe UI Semilight" Margin="20,-22" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Grid.ColumnSpan="4" Foreground="#7F000000"/>
+
+        <!--Main Content Background-->
+        <Border Style="{StaticResource ModernBorder}"
+                Padding="8"
+                Grid.Row="0" Grid.RowSpan="5" Grid.ColumnSpan="4"
+                Background="#FFF3F3ED" BorderBrush="#FFC5B458"
+                Margin="10,10,10,27"
+                Panel.ZIndex="-1">
+        </Border>
+
+        <!--Manual Input field-->
+        <Border Style="{StaticResource ModernBorder}" Margin="20,0" HorizontalAlignment="Stretch" Height="30" Grid.Row="1" Grid.ColumnSpan="3" Background="#193A3A35">
+            <TextBox Name="InputField" TextWrapping="Wrap" Text="1+1" Height="20" HorizontalAlignment="Stretch" Background="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+
+        <!--File Load option-->
+        <Border Style="{StaticResource ModernBorder}" Margin="0,0,20,0" HorizontalAlignment="Stretch" Height="30" Grid.Row="1" Grid.Column="3" Background="{x:Null}">
+            <Button Name="LoadFileButton" Style="{StaticResource HoverRemoveStyle}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="LoadFileButton_Click">
+                <Image Source="{iconPacks:MaterialImage Kind=File, Brush=#FF272625}" Margin="4"/>
+            </Button>
+        </Border>
+
+        <!--History-->
+        <Border Style="{StaticResource ModernBorder}" Margin="20,0" HorizontalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="4" Grid.RowSpan="2" Background="#193A3A35">
+            <RichTextBox Name="History" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}"/>
+        </Border>
+
+        <!--Evaluate bottom content-->
+        <Border Style="{StaticResource ModernBorder}"
+                Width="80" Height="40"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Grid.Row="4" Margin="35,7,0,0" Grid.ColumnSpan="2" Grid.Column="1">
+
+            <Border BorderThickness="2" Margin="-1" CornerRadius="10">
+                <Border.BorderBrush>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="1,0.5">
+                        <GradientStop Color="#FFEFE9D2"/>
+                        <GradientStop Color="#FFC1A432" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.BorderBrush>
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="1" BlurRadius="5" Direction="10" Color="#FF3A3934"/>
+                </Border.Effect>
+
+                <Button Name="EvaluateButton" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="EvaluateButton_Click">
+                    <Label FontFamily="Segoe UI Semilight" Content="EVALUATE" FontSize="13" Padding="0,0,0,0" HorizontalContentAlignment="Stretch" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF37342B" Background="{x:Null}" VerticalContentAlignment="Stretch"/>
+                </Button>
+
+            </Border>
+
+            <Border.Effect>
+                <DropShadowEffect Direction="30" BlurRadius="10" Color="#19B1AFA2" Opacity="0.4" ShadowDepth="4"/>
+            </Border.Effect>
+
+        </Border>
+
+
+    </Grid>
+
+</Window>
