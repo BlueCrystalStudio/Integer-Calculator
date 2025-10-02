@@ -1,8 +1,9 @@
 ﻿using Domain;
 using Microsoft.Win32;
+using System.Collections.Concurrent;
 using System.Windows;
 using System.Windows.Documents;
-
+using Utilities.Extensions;
 using Virtuplex_Calculator.ViewModels;
 
 namespace Virtuplex_Calculator;
@@ -26,10 +27,6 @@ public partial class MainWindow : Window
 
         // Set line height for History Controll
         (History.Document.Blocks.FirstBlock as Paragraph).LineHeight = 1;
-
-        AddToHistory("TEST");
-        AddToHistory("TEST");
-        AddToHistory("TEST");
     }
 
     private void EvaluateButton_Click(object sender, RoutedEventArgs e)
@@ -54,26 +51,36 @@ public partial class MainWindow : Window
     {
         try
         {
+            var operationStart = DateTime.Now;
             var openDialog = new OpenFileDialog { Filter = "Text Files|*.txt" };
             if (openDialog.ShowDialog() != true)
                 return;
 
-            var readLines = fileHandler.Load(openDialog.FileName);
+            var file = openDialog.FileName;
+            var readLines = fileHandler.Load(file);
+            var results = new ConcurrentBag<string>();
 
             viewModel.IsProcessing = true;
 
-            await Parallel.ForEachAsync(readLines, async (line, ct) =>
+            foreach (var line in readLines)
             {
-                //var result = await evaluator.ProcessAsync(line);
-                //AddToHistorySafe(line + " = " + result);
+                var result = await evaluator.ProcessAsync(line);
+                results.Add(result);
+            }
 
-                var result = evaluator.Process(line);
-                AddToHistorySafe(line + " = " + result);
+            // Append all results to History Controll on the UI thread
+            await Dispatcher.InvokeAsync(() =>
+            {
+                foreach (var entry in results)
+                {
+                    AddToHistory(entry);
+                }
             });
 
             viewModel.IsProcessing = false;
 
-            MessageBox.Show("Processing complete!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            var operationTimeComplexity = (DateTime.Now - operationStart).ToSecondsDisplayTime();
+            MessageBox.Show($"Processing of {file} complete! Operation took: {operationTimeComplexity}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
@@ -81,19 +88,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void AddToHistorySafe(string content)
-    {
-        bool isCurrentThreadUiThread = Thread.CurrentThread == Dispatcher.Thread;
-
-        if (!isCurrentThreadUiThread)
-        {
-            Dispatcher.Invoke(() => AddToHistory(content));
-        }
-        else
-        {
-            AddToHistory(content);
-        }
-    }
-
-    private void AddToHistory(string content) => History.AppendText($"{DateTime.Now:HH:MM:ss} {content} {Environment.NewLine}");
+    private void AddToHistory(string content) => History.AppendText($"{DateTime.Now:HH:mm:ss} {content} {Environment.NewLine}");
+    private void Window_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => DragMove();
 }

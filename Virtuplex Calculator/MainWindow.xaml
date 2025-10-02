@@ -11,7 +11,8 @@
         Height="450" Width="300"
         AllowsTransparency="True"
         WindowStyle="None"
-        Background="#00000000">
+        Background="#00000000"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
     <Window.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -93,6 +94,7 @@
         <Label Content="Input" FontFamily="Segoe UI Semilight" Margin="20,12" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="4" Foreground="#7F000000"/>
         <Label Content="From File" FontFamily="Segoe UI Semilight" Margin="0,12" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.Column="4" Foreground="#7F000000"/>
         <Label Content="History" FontFamily="Segoe UI Semilight" Margin="20,-22" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Grid.ColumnSpan="4" Foreground="#7F000000"/>
+        <Label IsHitTestVisible="False" Content="Created by Tomáš Petrlík" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="0" FontSize="12" Foreground="#CC3C3939" FontFamily="Pristina" IsEnabled="False" HorizontalContentAlignment="Right" Grid.ColumnSpan="4" Grid.Row="3" Margin="4" Grid.RowSpan="2"/>
 
         <!--Main Content Background-->
         <Border Style="{StaticResource ModernBorder}"
@@ -105,7 +107,7 @@
 
         <!--Manual Input field-->
         <Border Style="{StaticResource ModernBorder}" Margin="20,0" HorizontalAlignment="Stretch" Height="30" Grid.Row="1" Grid.ColumnSpan="3" Background="#193A3A35">
-            <TextBox Name="InputField" TextWrapping="Wrap" Text="2 + 3 * 2" Height="20" HorizontalAlignment="Stretch" Background="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Name="InputField" TextWrapping="Wrap" Text="2 + 3 * 2" Height="20" HorizontalAlignment="Stretch" Background="{x:Null}" SelectionBrush="#FF7B5B06" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
         </Border>
 
         <!--File Load option-->
@@ -117,7 +119,7 @@
 
         <!--History-->
         <Border Style="{StaticResource ModernBorder}" Margin="20,0" HorizontalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="4" Grid.RowSpan="2" Background="#193A3A35">
-            <RichTextBox Name="History" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" IsReadOnly="True"/>
+            <RichTextBox Name="History" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" SelectionBrush="#FF7B5B06" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" IsReadOnly="True"/>
         </Border>
 
         <!--Evaluate bottom content-->
@@ -126,7 +128,7 @@
                 HorizontalAlignment="Left" VerticalAlignment="Top"
                 Grid.Row="4" Margin="35,7,0,0" Grid.ColumnSpan="2" Grid.Column="1">
 
-            <Border BorderThickness="2" Margin="-1" CornerRadius="10">
+            <Border BorderThickness="1" Margin="-1" CornerRadius="10">
                 <Border.BorderBrush>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="1,0.5">
                         <GradientStop Color="#FFEFE9D2"/>
@@ -137,14 +139,14 @@
                     <DropShadowEffect ShadowDepth="1" BlurRadius="5" Direction="10" Color="#FF3A3934"/>
                 </Border.Effect>
 
-                <Button Name="EvaluateButton" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="EvaluateButton_Click">
+                <Button Name="EvaluateButton" Style="{StaticResource HoverRemoveStyle}" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="EvaluateButton_Click">
                     <Label FontFamily="Segoe UI Semilight" Content="EVALUATE" FontSize="13" Padding="0,0,0,0" HorizontalContentAlignment="Stretch" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF37342B" Background="{x:Null}" VerticalContentAlignment="Stretch"/>
                 </Button>
 
             </Border>
 
             <Border.Effect>
-                <DropShadowEffect Direction="30" BlurRadius="10" Color="#19B1AFA2" Opacity="0.4" ShadowDepth="4"/>
+                <DropShadowEffect Direction="90" BlurRadius="5" Color="#19B1AFA2" Opacity="0.45" ShadowDepth="4"/>
             </Border.Effect>
 
         </Border>
