@@ -7,7 +7,7 @@
         <Setter Property="Background" Value="#FFF3F3ED" />
     </Style>
 
-    <Style x:Key="HoverRemoveStyle" TargetType="Button">
+    <Style x:Key="HoverRemoveStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="#4C000000" />
         <Setter Property="Template">
             <Setter.Value>
