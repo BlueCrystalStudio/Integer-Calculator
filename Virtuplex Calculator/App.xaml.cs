@@ -1,11 +1,10 @@
 ﻿using Domain;
 using Infrastructure;
+using Infrastructure.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Configuration;
-using System.Data;
 using System.Windows;
 using Virtuplex_Calculator.ViewModels;
+using ConfigurationManager = Infrastructure.Configuration.ConfigurationManager;
 
 namespace Virtuplex_Calculator;
 
@@ -31,8 +30,11 @@ public partial class App : Application
     public void ConfigureServices(ServiceCollection services)
     {
         services.AddSingleton<MainWindow>();
-        services.AddTransient<MainWindowViewModel>();
+        services.AddSingleton<ConfigurationManager>();
+        services.AddSingleton<MainWindowViewModel>();
+
         services.AddTransient<IEvaluator, Evaluator>();
         services.AddTransient<IFileHandler, FileHandler>();
+        services.AddTransient<IXMLHandler, GenericXMLHandler>();
     }
 }

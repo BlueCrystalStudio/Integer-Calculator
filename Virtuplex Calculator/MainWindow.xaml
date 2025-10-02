@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         Title="Virtuplex Calculator"
         Height="450" Width="300"
+        MaxHeight="450" MaxWidth="300"
         AllowsTransparency="True"
         WindowStyle="None"
         Background="#00000000"
@@ -26,11 +27,12 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="203*"/>
-            <RowDefinition Height="47*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="0.75*"/>
         </Grid.RowDefinitions>
 
         <!--Processing Overlay-->
@@ -40,7 +42,7 @@
 				CornerRadius="20" Margin="0"
 				Background="#D8000000"
 				Panel.ZIndex="2"
-				Grid.ColumnSpan="4" Grid.RowSpan="5" BorderBrush="{x:Null}">
+				Grid.ColumnSpan="4" Grid.RowSpan="6" BorderBrush="{x:Null}">
 
             <Grid>
                 <!--Text-->
@@ -85,48 +87,66 @@
             </Grid>
         </Border>
 
-
-        <Button Name="CloseButton" Click="CloseButton_Click" Style="{StaticResource HoverRemoveStyle}" Grid.Column="3" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!--Close Button-->
+        <Button Name="CloseButton" Click="CloseButton_Click" Style="{StaticResource HoverRemoveStyle}" Grid.Column="3" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20,8,0,0">
             <Label FontFamily="Bahnschrift Light" Content="x" FontSize="20" Padding="0" HorizontalContentAlignment="Stretch" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFDA1C1C" Background="{x:Null}" VerticalContentAlignment="Stretch"/>
         </Button>
 
-        <Label Content="Integer Calculator" FontFamily="Segoe UI Semilight" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="4" Foreground="#4F37342B"/>
-        <Label Content="Input" FontFamily="Segoe UI Semilight" Margin="20,12" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="4" Foreground="#7F000000"/>
-        <Label Content="From File" FontFamily="Segoe UI Semilight" Margin="0,12" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.Column="4" Foreground="#7F000000"/>
-        <Label Content="History" FontFamily="Segoe UI Semilight" Margin="20,-22" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Grid.ColumnSpan="4" Foreground="#7F000000"/>
-        <Label IsHitTestVisible="False" Content="Created by Tomáš Petrlík" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="0" FontSize="12" Foreground="#CC3C3939" FontFamily="Pristina" IsEnabled="False" HorizontalContentAlignment="Right" Grid.ColumnSpan="4" Grid.Row="3" Margin="4" Grid.RowSpan="2"/>
+        <!--Static Labels-->
+        <Label Content="Integer Calculator" FontFamily="Segoe UI Semilight" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2" Foreground="#FF615C4D" Grid.Column="1" Margin="0,4,0,0"/>
+        <Label Content="Input" FontFamily="Segoe UI Semilight" Margin="0,12,0,0" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Foreground="#7F000000"/>
+        <Label Content="From File" FontFamily="Segoe UI Semilight" Margin="0,12,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" Foreground="#7F000000"/>
+        <Label Content="Output to Folder" FontFamily="Segoe UI Semilight" Margin="20,12,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#7F000000"/>
+        <Label Content="Edit" FontFamily="Segoe UI Semilight" Margin="0,12,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Grid.Column="3" Foreground="#7F000000"/>
+        <Label Content="History" FontFamily="Segoe UI Semilight" Margin="20,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="3" Foreground="#7F000000"/>
+        <Label IsHitTestVisible="False" Content="Created by Tomáš Petrlík" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="0" FontSize="12" Foreground="#CC3C3939" FontFamily="Pristina" IsEnabled="False" HorizontalContentAlignment="Right" Grid.ColumnSpan="2" Grid.Row="5" Margin="0,0,4,4" Grid.Column="2"/>
 
         <!--Main Content Background-->
         <Border Style="{StaticResource ModernBorder}"
                 Padding="8"
-                Grid.Row="0" Grid.RowSpan="5" Grid.ColumnSpan="4"
+                Grid.Row="0" Grid.RowSpan="6" Grid.ColumnSpan="4"
                 Background="#FFF3F3ED" BorderBrush="#FFC5B458"
                 Margin="10,10,10,27"
                 Panel.ZIndex="-1">
         </Border>
 
         <!--Manual Input field-->
-        <Border Style="{StaticResource ModernBorder}" Margin="20,0" HorizontalAlignment="Stretch" Height="30" Grid.Row="1" Grid.ColumnSpan="3" Background="#193A3A35">
+        <Border Style="{StaticResource ModernBorder}" Margin="20,35,20,0" Height="30" Grid.Row="1" Grid.ColumnSpan="3" Background="#193A3A35">
             <TextBox Name="InputField" TextWrapping="Wrap" Text="2 + 3 * 2" Height="20" HorizontalAlignment="Stretch" Background="{x:Null}" SelectionBrush="#FF7B5B06" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
         </Border>
 
         <!--File Load option-->
-        <Border Style="{StaticResource ModernBorder}" Margin="0,0,20,0" HorizontalAlignment="Stretch" Height="30" Grid.Row="1" Grid.Column="3" Background="{x:Null}">
+        <Border Style="{StaticResource ModernBorder}" Margin="0,35,20,0" Height="30" Grid.Row="1" Grid.Column="3" Background="{x:Null}">
             <Button Name="LoadFileButton" Style="{StaticResource HoverRemoveStyle}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="LoadFileButton_Click">
                 <Image Source="{iconPacks:MaterialImage Kind=File, Brush=#FF272625}" Margin="4"/>
             </Button>
         </Border>
 
+        <!--Output Folder-->
+        <Border Style="{StaticResource ModernBorder}" Margin="20,35,20,0" Height="30" Grid.Row="2" Grid.ColumnSpan="3" Background="#193A3A35">
+            <TextBox Name="OutputFolderPath" Text="{Binding OutputFolderPath}" FontSize="10" IsReadOnly="True" TextWrapping="NoWrap" Height="20" HorizontalAlignment="Stretch" Background="{x:Null}" SelectionBrush="#FF7B5B06" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+
+        <!--Path Edit option-->
+        <Border Style="{StaticResource ModernBorder}" Margin="0,35,20,0" Height="30" Grid.Row="2" Grid.Column="3" Background="{x:Null}">
+            <Button Name="PathEdit" Style="{StaticResource HoverRemoveStyle}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="PathEdit_Click">
+                <Image Source="{iconPacks:MaterialImage Kind=Wrench, Brush=#FF272625}" Margin="4"/>
+            </Button>
+        </Border>
+
+        <!--Output Folder Enable Option-->
+        <CheckBox Name="OutputFolderEnable" IsChecked="{Binding SaveToOutputFolder}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,22,38" BorderBrush="{x:Null}" Background="#19000000" Foreground="{x:Null}" Checked="OutputFolderEnable_Checked" Unchecked="OutputFolderEnable_Unchecked"/>
+
         <!--History-->
-        <Border Style="{StaticResource ModernBorder}" Margin="20,0" HorizontalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="4" Grid.RowSpan="2" Background="#193A3A35">
+        <Border Style="{StaticResource ModernBorder}" Margin="20,22" Grid.Row="3" Grid.ColumnSpan="4" Grid.RowSpan="2" Background="#193A3A35">
             <RichTextBox Name="History" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" SelectionBrush="#FF7B5B06" SelectionTextBrush="{x:Null}" BorderBrush="{x:Null}" IsReadOnly="True"/>
         </Border>
 
         <!--Evaluate bottom content-->
         <Border Style="{StaticResource ModernBorder}"
                 Width="80" Height="40"
-                HorizontalAlignment="Left" VerticalAlignment="Top"
-                Grid.Row="4" Margin="35,7,0,0" Grid.ColumnSpan="2" Grid.Column="1">
+                HorizontalAlignment="Center" VerticalAlignment="Top"
+                Grid.Row="5" Margin="0,7,0,0" Grid.ColumnSpan="2" Grid.Column="1">
 
             <Border BorderThickness="1" Margin="-1" CornerRadius="10">
                 <Border.BorderBrush>
@@ -150,7 +170,6 @@
             </Border.Effect>
 
         </Border>
-
 
     </Grid>
 

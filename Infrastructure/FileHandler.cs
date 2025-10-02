@@ -13,4 +13,6 @@ public class FileHandler : IFileHandler
 
         return File.ReadAllLines(path);
     }
+
+    public async Task Save(string path, string[] lines) => await File.AppendAllLinesAsync(path, lines);
 }

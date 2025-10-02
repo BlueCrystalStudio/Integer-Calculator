@@ -9,4 +9,5 @@ public interface IFileHandler
     /// <returns>Read Lines</returns>
     /// <exception cref="FileNotFoundException"></exception>
     public string[] Load(string path);
+    Task Save(string path, string[] lines);
 }
