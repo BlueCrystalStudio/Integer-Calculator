@@ -1,6 +1,6 @@
 ﻿using Domain;
+using Domain.Constants;
 using System.Data;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Infrastructure;
@@ -10,21 +10,33 @@ public class Evaluator : IEvaluator
     {
         try
         {
+            // Check
             if (string.IsNullOrWhiteSpace(input))
                 return "";
 
+            input = input.Replace(" ", "");
+            if (input.Contains("/0"))
+            {
+                return "Error: Division by zero";
+            }
+
             // Validate
-            if (!Regex.IsMatch(input, @"^[0-9+\-*/\s()]+$"))
-                return "Error: Invalid characters";
+            var invalidCharacters = GetInvalidCharacters(input);
+            if (!string.IsNullOrEmpty(invalidCharacters))
+            {
+                return $"Error: Invalid characters: {invalidCharacters}";
+            }
 
             var result = new DataTable().Compute(input, "");
-            int intResult = Convert.ToInt32(Math.Floor(Convert.ToDouble(result)));
+            long longResult = Convert.ToInt64(Math.Floor(Convert.ToDouble(result)));
 
-            return intResult.ToString();
+            return longResult.ToString();
         }
-        catch (DivideByZeroException)
+        catch (OverflowException)
         {
-            return "Error: Division by zero";
+            // rethrow for higher level handling.
+            // From my research this is correct approach and not anti-pattern, but you have to disable User-unhandled Errors.
+            throw;
         }
         catch (Exception ex)
         {
@@ -32,5 +44,21 @@ public class Evaluator : IEvaluator
         }
     }
 
+    //                                                                  ¯\_(ツ)_/¯
     public async Task<string> ProcessAsync(string input) => await Task.Run(() => Process(input));
+
+    private string GetInvalidCharacters(string input)
+    {
+        var invalidChars = Regex.Replace(input, Evaluators.ValidCharactersPattern, "");
+        if (invalidChars.Length > 0)
+        {
+            // remove duplicates for readability
+            var invalidCharacters = string.Join(" ", invalidChars.Distinct());
+            return invalidCharacters;
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
 }
