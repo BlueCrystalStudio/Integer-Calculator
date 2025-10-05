@@ -8,6 +8,6 @@ public interface IFileHandler
     /// <param name="path">Path to file</param>
     /// <returns>Read Lines</returns>
     /// <exception cref="FileNotFoundException"></exception>
-    public string[] Load(string path);
+    Task<string[]> Load(string path);
     Task Save(string path, string[] lines);
 }
