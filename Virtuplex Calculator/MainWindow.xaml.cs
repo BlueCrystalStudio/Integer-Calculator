@@ -144,15 +144,10 @@ public partial class MainWindow : Window
         // Append all results to History Controll on the UI thread
         await Dispatcher.InvokeAsync(() =>
         {
-            Task.Run(() =>
+            foreach (var entry in results)
             {
-                foreach (var entry in results)
-                {
-                    AddToHistory(entry);
-                    Task.Delay(100).GetAwaiter().GetResult();
-                }
-            });
-
+                AddToHistory(entry);
+            }
         });
     }
 
@@ -162,6 +157,13 @@ public partial class MainWindow : Window
             return;
 
         var outputFilePath = viewModel.OutputFolderPath;
+
+        if(string.IsNullOrWhiteSpace(outputFilePath))
+        {
+            outputFilePath = Environment.CurrentDirectory + "\\output.txt";
+            viewModel.OutputFolderPath = outputFilePath;
+        }
+
         _ = fileHandler.Save(outputFilePath, results.ToArray());
         MessageBox.Show($"Results saved to: {outputFilePath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
     }
