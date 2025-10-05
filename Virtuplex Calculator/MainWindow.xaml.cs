@@ -1,34 +1,34 @@
 ﻿using Domain;
+using Domain.Constants;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
-using System.Collections.Concurrent;
 using System.Windows;
 using System.Windows.Documents;
 using Utilities.Extensions;
 using Virtuplex_Calculator.ViewModels;
-using ConfigurationManager = Infrastructure.Configuration.ConfigurationManager;
 
 namespace Virtuplex_Calculator;
 
 public partial class MainWindow : Window
 {
-    MainWindowViewModel viewModel;
-    ConfigurationManager configurationManager;  // remove?
+    readonly MainWindowViewModel viewModel;
 
-    IEvaluator evaluator;
-    IFileHandler fileHandler;
+    readonly IEvaluator evaluator;
+    readonly IEvaluator bigNumbersEvaluator;
+    readonly IFileHandler fileHandler;
 
     public MainWindow(
         MainWindowViewModel viewModel,
-        ConfigurationManager configManager,
-        IEvaluator evaluator,
+        [FromKeyedServices(DependencyInjectionConstants.DataTableEvaluator)] IEvaluator evaluator,
+        [FromKeyedServices(DependencyInjectionConstants.BigNumbersEvaluator)] IEvaluator bigNumbersEvaluator,
         IFileHandler fileHandler)
     {
         InitializeComponent();
 
         this.viewModel = viewModel;
         this.evaluator = evaluator;
+        this.bigNumbersEvaluator = bigNumbersEvaluator;
         this.fileHandler = fileHandler;
-        configurationManager = configManager;
 
         DataContext = this.viewModel;
 
@@ -36,18 +36,18 @@ public partial class MainWindow : Window
         (History.Document.Blocks.FirstBlock as Paragraph).LineHeight = 1;
     }
 
-    private void EvaluateButton_Click(object sender, RoutedEventArgs e)
+    private async void EvaluateButton_Click(object sender, RoutedEventArgs e)
     {
         try
         {
             string expression = InputField.Text.Trim();
-            string result = evaluator.Process(expression);
+            var results = await ProcessExpressions([expression]);
 
-            AddToHistory($"{expression} = {result}");
+            await AddResultsToHistory(results);
 
             if (viewModel.SaveToOutputFolder)
             {
-                SaveResults([result]);
+                SaveResults(results);
             }
         }
         catch(Exception ex)
@@ -67,42 +67,93 @@ public partial class MainWindow : Window
             if (openDialog.ShowDialog() != true)
                 return;
 
+            OverlayText.Content = "Loading...";
             var file = openDialog.FileName;
-            var readLines = fileHandler.Load(file);
-            var results = new ConcurrentBag<string>();
+            var readLines = await fileHandler.Load(file);
 
-            viewModel.IsProcessing = true;
             viewModel.LastEvaluatedFile = file;
 
-            foreach (var line in readLines)
-            {
-                var result = await evaluator.ProcessAsync(line);
-                results.Add(result);
-            }
-
-            // Append all results to History Controll on the UI thread
-            await Dispatcher.InvokeAsync(() =>
-            {
-                foreach (var entry in results)
-                {
-                    AddToHistory(entry);
-                }
-            });
-
-            viewModel.IsProcessing = false;
-
+            var results = await ProcessExpressions(readLines);
             var operationTimeComplexity = (DateTime.Now - operationStart).ToSecondsDisplayTime();
+
+            // TODO: Maybe create an Option for this?
+            await AddResultsToHistory(results);
+
             MessageBox.Show($"Processing of {file} complete! Operation took: {operationTimeComplexity}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
             if (viewModel.SaveToOutputFolder)
             {
                 SaveResults(results);
             }
+
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private async Task<List<string>> ProcessExpressions(IEnumerable<string> expressions)
+    {
+        var results = new List<string>();
+
+        viewModel.IsProcessing = true;
+        OverlayText.Content = "Processing...";
+
+        foreach (var line in expressions)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            try
+            {
+                var result = await evaluator.ProcessAsync(line);
+                results.Add(result);
+            }
+            catch(OverflowException)
+            {
+                try
+                {
+                    var bigNumberResult = await bigNumbersEvaluator.ProcessAsync(line);
+                    results.Add(bigNumberResult);
+                    continue;
+                }
+                catch
+                {
+                    // If BigNumbersEvaluator also fails, just continue with the next expression
+                    results.Add("Error: Result could not be solved.");
+                    continue;
+                }
+            }
+            catch (Exception ex)
+            {
+                results.Add($"Error: {ex.Message}");
+                continue;
+            }
+        }
+
+        viewModel.IsProcessing = false;
+
+        return results;
+    }
+
+    private async Task AddResultsToHistory(IEnumerable<string> results)
+    {
+        OverlayText.Content = "Adding to History...";
+
+        // Append all results to History Controll on the UI thread
+        await Dispatcher.InvokeAsync(() =>
+        {
+            Task.Run(() =>
+            {
+                foreach (var entry in results)
+                {
+                    AddToHistory(entry);
+                    Task.Delay(100).GetAwaiter().GetResult();
+                }
+            });
+
+        });
     }
 
     private void SaveResults(IEnumerable<string> results)

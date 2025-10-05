@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Constants;
 using Infrastructure;
 using Infrastructure.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +34,9 @@ public partial class App : Application
         services.AddSingleton<ConfigurationManager>();
         services.AddSingleton<MainWindowViewModel>();
 
-        services.AddTransient<IEvaluator, Evaluator>();
+        services.AddKeyedSingleton<IEvaluator, Evaluator>(DependencyInjectionConstants.DataTableEvaluator);
+        services.AddKeyedSingleton<IEvaluator, BigNumbersEvaluator>(DependencyInjectionConstants.BigNumbersEvaluator);
+
         services.AddTransient<IFileHandler, FileHandler>();
         services.AddTransient<IXMLHandler, GenericXMLHandler>();
     }
